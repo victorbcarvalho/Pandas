@@ -113,3 +113,64 @@ help(base.assign)
 # data_range
 pd.date_range('01/01/2023', periods=3)
 
+# sample
+alugueis.sample(n=5, random_state=42)
+
+# value_counts
+alugueis.furniture.value_counts()
+
+# usando o pacote os e Path
+import os
+from pathlib import Path
+
+p = Path(os.getcwd()) # pasta atual
+print(p)
+
+print(p.parent) # pasta pai
+
+print(p.parent.parent) # pasta avô
+
+print(str(p.parent.parent) + '\\Basico do basico\\estudado-pandas\\dados\\')
+
+pasta_bases = str(p.parent.parent) + "\\Basico do basico\\estudado-pandas\\dados\\"
+df = pd.read_csv(pasta_bases + "houses_to_rent.csv")
+
+# sys.path
+import sys
+
+for i in sys.path:
+       print(i)
+
+# adicionando pasta no sys.path
+sys.path.append('h/users/basto/Documents/Basico do basico/estudado-pandas/pastaX')
+
+
+# Exportando para excel e csv
+df.head()
+
+new_df = df.loc[:10, ['city','rooms','area']]
+
+new_df.to_excel('alugueis_teste.xlsx')
+new_df.to_csv('alugueis_teste.csv', index=False)
+
+data = pd.read_excel('alugueis_teste.xlsx', index_col=0)
+data.head()
+
+# info
+df.info()
+
+# describe
+df.describe()
+
+df.describe().T
+
+df.describe(include=[object]).T 
+
+del df['Unnamed: 0']
+
+df.describe(
+       percentiles=[
+              0.25, 0.5, 0.75
+       ]
+).T
+
