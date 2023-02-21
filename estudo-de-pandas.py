@@ -65,3 +65,51 @@ df.loc[(df.age >= 30) & (df.age <= 50) ,['marital','age']].groupby('marital').me
 
 df.loc[(df.age >=30) & (df.age <= 50), ['marital','education','age']].groupby(['marital','education']).mean()
 
+# insert
+df.insert(1, 'Inserindo_em_index_determinados', 'inserido na col de index 1')
+
+# Remoção de colunas
+del df['Inserindo_em_index_determinados']
+
+# pop
+coluna_excluida = df.pop('Inserindo_em_index_determinados')
+
+# repalce, apply e applymap
+alugueis = pd.read_csv('dados/houses_to_rent.csv')
+
+alugueis['hoa'].replace('R$','') # Não funciona
+
+alugueis['hoa_tratado'] = alugueis['hoa'].apply(lambda x: x.replace('R$','').replace(',',''))
+alugueis['hoa_tratado']
+
+alugueis[['hoa','rent amount', 'property tax']].applymap(lambda x: x.replace('R$','').replace(',',''))
+
+# rename
+alugueis.rename(columns = {'city': 'cidade', 'area': 'area_m2', 'bathroom': 'banheirtos', 'rooms': 'quartos'})
+
+novos_nomes = ['indice','area_m2','quartos','banheiros', 'vagas_estacionamento','andar','aceita_animais','mobiliado','hoa','valor_aluguel','taxas','seguro_incendio','total']
+colunas_antigas = alugueis.columns.to_list()
+novas_colunas = dict(zip(colunas_antigas, novos_nomes))
+
+alugueis.rename(columns = novas_colunas)  
+       
+alugueis.columns = [x.replace(' ', '_').lower() for x in alugueis.columns.to_list()]
+
+# copy
+base = alugueis.copy(deep = True)
+
+# append
+base.append({'Churros': 90}, ignore_index=True) # usar quando vc já tem uma linha inteira para colocar
+
+# assign
+base = base.assign(
+       rent_amount_tratado = base['rent_amount'].apply(lambda x: x.replace('R$','').replace(',','')),
+       property_tax_tratado = base['property_tax'].apply(lambda x: x.replace('R$','').replace(',',''))
+)
+
+# help
+help(base.assign)
+
+# data_range
+pd.date_range('01/01/2023', periods=3)
+
