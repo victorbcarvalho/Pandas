@@ -174,3 +174,59 @@ df.describe(
        ]
 ).T
 
+# dicionario dos dados
+dic_dados = {
+       'nome_coluna': ['city','area','rooms'],
+       'descricao': ['Cidedade onde o imóvel está localizado',
+                     'Àrea em metros quadrados do imóvel',
+                     'Quantidade de quartos'],
+       'tipo_dado': ['Númerico (categorico)', 'Númerico', 'Quantitativo'],
+       'tipo_dado_np': ['Int64','Int64','Int64']
+}
+
+dic_dados = pd.DataFrame(dic_dados)
+
+dic_dados.to_csv('dados/dicionario_dados.csv', index=False)
+
+# Verificando o consumo de memória usando .memory_usage(deep=true)
+consumo_memoria_old = df.memory_usage(deep=True)
+
+df_copia = df.copy(deep=True)
+
+df_copia.info()
+
+df_copia['area'] = df_copia['area'].astype(np.int8)
+df_copia['rooms'] = df_copia['rooms'].astype(np.int8)
+df_copia['bathroom'] = df_copia['bathroom'].astype(np.int8)
+df_copia['parking spaces'] = df_copia['parking spaces'].astype(np.int8)
+df_copia['city'] = df_copia['city'].astype(np.int64)
+
+
+
+df_copia.memory_usage(deep=True) - consumo_memoria_old
+
+df_copia.select_dtypes(include = [object, np.int64]).nunique()
+
+## Convertendo para categoricos
+df_copia['city'] = df_copia['city'].astype('category')
+df_copia['animal'] = df_copia['animal'].astype('category')
+df_copia['furniture'] = df_copia['furniture'].astype('category')
+
+consumo_memoria_atual = df_copia.memory_usage(deep=True) 
+
+consumo_memoria_atual / consumo_memoria_old
+
+# agg
+alugueis_copia = alugueis.copy(deep=True)
+colunas_sifrao = ['hoa','rent_amount', 'property_tax','fire_insurance','total']
+dados_sem_sifrao = alugueis_copia.loc[:, ~alugueis_copia.columns.isin(colunas_sifrao)]
+dados_sifrao = alugueis_copia.loc[:, colunas_sifrao]
+dados_sifrao_tratados = dados_sifrao.applymap(lambda x: x.replace('R$','').replace(',','').replace('Sem info', '0').replace('Incluso','0'))
+
+alugueis_copia = pd.concat([dados_sem_sifrao, dados_sifrao_tratados], axis=1)
+
+alugueis_copia.hoa = alugueis_copia.hoa.astype('int')
+alugueis_copia.rent_amount = alugueis_copia.rent_amount.astype('int')
+
+alugueis_copia[['city', 'hoa']].groupby('city').agg([np.mean, np.median])
+alugueis_copia.groupby('city').agg(mean_hoa=('hoa', np.mean), mean_rent_amount=('rent_amount', np.mean))

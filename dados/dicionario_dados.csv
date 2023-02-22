@@ -1,0 +1,4 @@
+nome_coluna,descricao,tipo_dado,tipo_dado_np
+city,Cidedade onde o imóvel está localizado,Númerico (categorico),Int64
+area,Àrea em metros quadrados do imóvel,Númerico,Int64
+rooms,Quantidade de quartos,Quantitativo,Int64
